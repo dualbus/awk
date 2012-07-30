@@ -1,3 +1,9 @@
-Event-based Awk CSV parser.
+awkcsv
+======
 
-test.csv taken from <lorance.freeshell.org/csv/test.csv>.
+:description: An event-based Awk CSV parser.
+
+- test.csv taken from <lorance.freeshell.org/csv/test.csv>.
+- To test the sample totsv.awk run:
+
+    awk -f csv.awk -f totsv.awk input.csv
