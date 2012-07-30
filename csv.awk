@@ -30,37 +30,37 @@ BEGIN {
 
     s = 1;
     #RFC = "^[\\040-\\041\\043-\\053\\055-\\176]$";
-    RFC = "^[";
-    RFC = RFC"] !#$%&'()*+./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ\\\\_`";
-    RFC = RFC"abcdefghijklmnopqrstuvwxyz{|}~^[-";
-    RFC = RFC"]$";
-    XRFC = "^[\f\t\v]$";
+#    RFC = "^[";
+#    RFC = RFC"] !#$%&'()*+./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ\\\\_`";
+#    RFC = RFC"abcdefghijklmnopqrstuvwxyz{|}~^[-";
+#    RFC = RFC"]$";
+#    XRFC = "^[\f\t\v]$";
 }
 
 {
     n = length;
     for(i = 1; i <= n + 1; i++) {
         c = substr($0, i, 1);
-        c = (c == "") ? "\n" : c;
 
-        if(1 == s) {
-            if("\"" == c) {
-                s = 2;
-                c = "";
-            } else
+        if(4 == s) {
             if("," == c) {
+                s = 1;
+                event_field(f);
+                f = "";
+                c = "";
             } else
             if("\r" == c) {
                 s = 5;
                 c = "";
             } else
-            if("\n" == c) {
-                s = 6;
-            } else
-            if(c ~ RFC || c ~ XRFC) {
-                s = 4;
-            } else {
-                die(i, s, c, "Expecting DQUOTE, TEXTDATA, COMMA, CR, or LF");
+            if("" == c) {
+                s = 1;
+                event_record(f);
+                f = "";
+#            } else
+#            if(c ~ RFC || c ~ XRFC) {
+#            } else {
+#                die(i, s, c, "Expecting TEXTDATA");
             }
         } else
         if(2 == s) {
@@ -68,10 +68,41 @@ BEGIN {
                 s = 3;
                 c = "";
             } else
-            if(!(c ~ RFC || c ~ /[,\r\n]/)) {
-            if(!(c ~ RFC || c ~ XRFC || c ~ /[,\r\n]/)) {
-                die(i, s, c, "Unexpected character");
+            if("" == c) {
+                c = "\n";
+#            } else
+#            if(!(c ~ RFC || c ~ XRFC || c ~ /[,\r\n]/)) {
+#                die(i, s, c, "Unexpected character");
             }
+        } else
+        if(1 == s) {
+            if("\"" == c) {
+                s = 2;
+                c = "";
+            } else
+            if("," == c) {
+                event_field(f);
+                f = "";
+                c = "";
+            } else
+            if("\r" == c) {
+                s = 5;
+                c = "";
+            } else
+            if("" == c) {
+                s = 1;
+                event_record(f);
+                f = "";
+            } else 
+#
+            {
+                s = 4;
+            }
+#            if(c ~ RFC || c ~ XRFC) {
+#                s = 4;
+#            } else {
+#                die(i, s, c, "Expecting DQUOTE, TEXTDATA, COMMA, CR, or LF");
+#            }
         } else
         if(3 == s) {
             if("\"" == c) {
@@ -79,51 +110,31 @@ BEGIN {
             } else
             if("," == c) {
                 s = 1;
+                event_field(f);
+                f = "";
+                c = "";
             } else
             if("\r" == c) {
                 s = 5;
                 c = "";
             } else
-            if("\n" == c) {
-                s = 6;
+            if("" == c) {
+                s = 1;
+                event_record(f);
+                f = "";
             } else {
                 die(i, s, c, "Expecting DQUOTE, COMMA, CR, or LF");
             }
         } else
-        if(4 == s) {
-            if("," == c) {
-                s = 1;
-            } else
-            if("\r" == c) {
-                s = 5;
-                c = "";
-            } else
-            if("\n" == c) {
-                s = 6;
-            } else
-            if(c ~ RFC || c ~ XRFC) {
-            } else {
-                die(i, s, c, "Expecting TEXTDATA");
-            }
-        } else
         if(5 == s) {
-            if("\n" == c) {
-                s = 6;
+            if("" == c) {
+                s = 1;
+                event_record(f);
+                f = "";
             } else {
                 die(i, s, c, "Expecting LF");
             }
         }
-
-        if(1 == s) {
-            event_field(f);
-            f = "";
-        } else
-        if(6 == s) {
-            event_record(f);
-            f = "";
-            s = 1;
-        } else {
-            f = f c;
-        }
+        f = f c;
     }
 }
