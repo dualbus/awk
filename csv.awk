@@ -62,7 +62,6 @@ BEGIN {
                 s = 4;
             } else {
             if("," == c) {
-                s = 1;
             } else
             if("\r" == c) {
                 s = 5;
@@ -71,7 +70,7 @@ BEGIN {
             if("\n" == c) {
                 s = 6;
             } else
-                die(i, s, c, "Unexpected");
+                die(i, s, c, "Expecting DQUOTE, TEXTDATA, COMMA, CR, or LF");
             }
         } else
         if(2 == s) {
@@ -80,18 +79,14 @@ BEGIN {
                 c = "";
             } else
             if(0 < index(T, c)) {
-                s = 2;
             } else
             if("," == c) {
-                s = 2;
             } else
             if("\r" == c) {
-                s = 2;
             } else
             if("\n" == c) {
-                s = 2;
             } else {
-                die(i, s, c, "XXX");
+                die(i, s, c, "Unexpected character");
             }
         } else
         if(3 == s) {
@@ -113,7 +108,6 @@ BEGIN {
         } else
         if(4 == s) {
             if(0 < index(T, c)) {
-                s = 4;
             } else
             if("," == c) {
                 s = 1;
@@ -132,7 +126,7 @@ BEGIN {
             if("\n" == c) {
                 s = 6;
             } else {
-                die(i, s, c, "ZAB");
+                die(i, s, c, "Expecting LF");
             }
         }
 
