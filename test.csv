@@ -1,0 +1,12 @@
+This,is,a test,CSV, file.
+It contains,"quoted text",and, numbers 1234 , 5678
+It also has,"quoted text with an embedded quote""<- right there"
+Then there are a few,,blank fields like these here ->,,,
+A quoted blank field,"",<- there.
+This next one causes an error if newline handling is turned off.
+"There is a newline here ->
+<- and it should be processed correctly."
+"And here is an"Error
+"
+This is a strange border case."
+"Spaces" , "before and after, separators"  ,  "cause problems" 
