@@ -1,6 +1,6 @@
 #!/usr/bin/awk -f
 
-# Awk implementation of RFC4180 <http://www.ietf.org/rfc/rfc4180.txt>.
+# Awk implementation of (almost) RFC4180 <http://www.ietf.org/rfc/rfc4180.txt>.
 
 function die(i, s, c, msg) {
     error_fmt = "E [R=%d,C=%d,s=%d,\"i=%s\"]: %s.\n";
@@ -29,7 +29,6 @@ BEGIN {
     FS = "";
 
     s = 1;
-    #RFC = "^[\\040-\\041\\043-\\053\\055-\\176]$";
 #    RFC = "^[";
 #    RFC = RFC"] !#$%&'()*+./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ\\\\_`";
 #    RFC = RFC"abcdefghijklmnopqrstuvwxyz{|}~^[-";
@@ -47,20 +46,22 @@ BEGIN {
                 s = 1;
                 event_field(f);
                 f = "";
-                c = "";
+                continue;
             } else
             if("\r" == c) {
-                s = 5;
-                c = "";
+                if(i == n) {
+                    s = 1;
+                    event_record(f);
+                    f = "";
+                    continue;
+                } else {
+                    die(i, s, c, "Expecting LF");
+                }
             } else
             if("" == c) {
                 s = 1;
                 event_record(f);
                 f = "";
-#            } else
-#            if(c ~ RFC || c ~ XRFC) {
-#            } else {
-#                die(i, s, c, "Expecting TEXTDATA");
             }
         } else
         if(2 == s) {
@@ -70,9 +71,6 @@ BEGIN {
             } else
             if("" == c) {
                 c = "\n";
-#            } else
-#            if(!(c ~ RFC || c ~ XRFC || c ~ /[,\r\n]/)) {
-#                die(i, s, c, "Unexpected character");
             }
         } else
         if(1 == s) {
@@ -83,26 +81,24 @@ BEGIN {
             if("," == c) {
                 event_field(f);
                 f = "";
-                c = "";
+                continue;
             } else
             if("\r" == c) {
-                s = 5;
-                c = "";
+                if(i == n) {
+                    event_record(f);
+                    f = "";
+                    continue;
+                } else {
+                    die(i, s, c, "Expecting LF");
+                }
             } else
             if("" == c) {
                 s = 1;
                 event_record(f);
                 f = "";
-            } else 
-#
-            {
+            } else {
                 s = 4;
             }
-#            if(c ~ RFC || c ~ XRFC) {
-#                s = 4;
-#            } else {
-#                die(i, s, c, "Expecting DQUOTE, TEXTDATA, COMMA, CR, or LF");
-#            }
         } else
         if(3 == s) {
             if("\"" == c) {
@@ -112,11 +108,17 @@ BEGIN {
                 s = 1;
                 event_field(f);
                 f = "";
-                c = "";
+                continue;
             } else
             if("\r" == c) {
-                s = 5;
-                c = "";
+                if(i == n) {
+                    s = 1;
+                    event_record(f);
+                    f = "";
+                    continue;
+                } else {
+                    die(i, s, c, "Expecting LF");
+                }
             } else
             if("" == c) {
                 s = 1;
@@ -124,15 +126,6 @@ BEGIN {
                 f = "";
             } else {
                 die(i, s, c, "Expecting DQUOTE, COMMA, CR, or LF");
-            }
-        } else
-        if(5 == s) {
-            if("" == c) {
-                s = 1;
-                event_record(f);
-                f = "";
-            } else {
-                die(i, s, c, "Expecting LF");
             }
         }
         f = f c;

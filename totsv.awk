@@ -8,11 +8,11 @@ function escape(f) {
 }
 
 function event_field(f) {
-#    f = escape(f);
+    f = escape(f);
     printf "%s\t", f;
 }
 
 function event_record(f) {
-#    f = escape(f);
+    f = escape(f);
     printf "%s\n", f;
 }
