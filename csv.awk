@@ -9,7 +9,7 @@ function die(i, s, c, msg) {
     exit 1;
 }
 
-function escape_field(f,    i, e, n) {
+function csv_escape_field(f,    i, e, n) {
     n = length(f);
     e = 0;
     for(i = 1; i <= n; i++) {
@@ -25,23 +25,16 @@ function escape_field(f,    i, e, n) {
     return f;
 }
 
-function event_field(f,    i, n) {
-    f = escape_field(f);
-    printf "%s,", f;
-}
-
-function event_record(f) {
-    f = escape_field(f);
-    printf "%s\r\n", f;
-}
-
 BEGIN {
     FS = "";
 
     s = 1;
-    T = "";
-    T = T" !#$%&'()*+-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abc";
-    T = T"defghijklmnopqrstuvwxyz{|}~";
+    #RFC = "^[\\040-\\041\\043-\\053\\055-\\176]$";
+    RFC = "^[";
+    RFC = RFC"] !#$%&'()*+./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ\\\\_`";
+    RFC = RFC"abcdefghijklmnopqrstuvwxyz{|}~^[-";
+    RFC = RFC"]$";
+    XRFC = "^[\f\t\v]$";
 }
 
 {
@@ -55,8 +48,7 @@ BEGIN {
                 s = 2;
                 c = "";
             } else
-            if(0 < index(T, c)) {
-                # Change to c ~ re & test.
+            if(c ~ RFC || c ~ XRFC) {
                 s = 4;
             } else {
             if("," == c) {
@@ -76,7 +68,7 @@ BEGIN {
                 s = 3;
                 c = "";
             } else
-            if(!(0 < index(T, c) || c ~ /[,\r\n]/)) {
+            if(!(c ~ RFC || c ~ XRFC || c ~ /[,\r\n]/)) {
                 die(i, s, c, "Unexpected character");
             }
         } else
@@ -98,7 +90,7 @@ BEGIN {
             }
         } else
         if(4 == s) {
-            if(0 < index(T, c)) {
+            if(c ~ RFC || c ~ XRFC) {
             } else
             if("," == c) {
                 s = 1;
