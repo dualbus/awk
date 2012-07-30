@@ -48,9 +48,6 @@ BEGIN {
                 s = 2;
                 c = "";
             } else
-            if(c ~ RFC || c ~ XRFC) {
-                s = 4;
-            } else {
             if("," == c) {
             } else
             if("\r" == c) {
@@ -60,6 +57,9 @@ BEGIN {
             if("\n" == c) {
                 s = 6;
             } else
+            if(c ~ RFC || c ~ XRFC) {
+                s = 4;
+            } else {
                 die(i, s, c, "Expecting DQUOTE, TEXTDATA, COMMA, CR, or LF");
             }
         } else
@@ -68,6 +68,7 @@ BEGIN {
                 s = 3;
                 c = "";
             } else
+            if(!(c ~ RFC || c ~ /[,\r\n]/)) {
             if(!(c ~ RFC || c ~ XRFC || c ~ /[,\r\n]/)) {
                 die(i, s, c, "Unexpected character");
             }
@@ -90,8 +91,6 @@ BEGIN {
             }
         } else
         if(4 == s) {
-            if(c ~ RFC || c ~ XRFC) {
-            } else
             if("," == c) {
                 s = 1;
             } else
@@ -101,6 +100,8 @@ BEGIN {
             } else
             if("\n" == c) {
                 s = 6;
+            } else
+            if(c ~ RFC || c ~ XRFC) {
             } else {
                 die(i, s, c, "Expecting TEXTDATA");
             }
