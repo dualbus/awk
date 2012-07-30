@@ -42,8 +42,6 @@ BEGIN {
     T = "";
     T = T" !#$%&'()*+-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abc";
     T = T"defghijklmnopqrstuvwxyz{|}~";
-
-    Tr = //;
 }
 
 {
@@ -78,14 +76,7 @@ BEGIN {
                 s = 3;
                 c = "";
             } else
-            if(0 < index(T, c)) {
-            } else
-            if("," == c) {
-            } else
-            if("\r" == c) {
-            } else
-            if("\n" == c) {
-            } else {
+            if(!(0 < index(T, c) || c ~ /[,\r\n]/)) {
                 die(i, s, c, "Unexpected character");
             }
         } else
