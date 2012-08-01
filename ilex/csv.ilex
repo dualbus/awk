@@ -1,0 +1,5 @@
+comma: ,
+escaped: [[:blank:]]*"(""|[^"])*"[[:blank:]]*
+non-escaped: [^,"\r\n]*
+newline: \r\n|\n
+error: .

@@ -1,0 +1,6 @@
+word: [[:alpha:]]+
+space: [[:blank:]]
+newline: [\n]
+string: "(\\.|[^"])*"
+punctuation: [[:punct:]]+
+error: .

@@ -1,0 +1,6 @@
+space:   [[:blank:]]+
+comment: #[^\n]*
+string:  "[^"]*"
+newline: [\n]
+word:    [^[:space:]]+
+error:   .
