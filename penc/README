@@ -1,0 +1,5 @@
+Percent encoding
+================
+
+- Implements RFC 3986 percent encoding.
+- Implements Form Url encoding (application/x-www-form-urlencoded).
