@@ -2,7 +2,7 @@
 
 function escape_string(s) {
     gsub(/\\/,  "\\\\", s);
-    gsub(/"/,   "\\\"", s);
+    #gsub(/"/,   "\\\"", s);
     gsub(/\n/,  "\\n",  s);
     gsub(/\r/,  "\\r",  s);
     gsub(/\f/,  "\\f",  s);
@@ -64,7 +64,7 @@ END {
         }
 
         tok = escape_string(substr(f, 1, ml));
-            printf "%s: \"%s\"\n", mt, tok;
+            printf "%s: %s\n", mt, tok;
 
         f = substr(f, ml+1);
     }

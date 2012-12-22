@@ -1,6 +1,8 @@
 word: [[:alpha:]]+
 space: [[:blank:]]
+integer: [[:digit:]]+
 newline: [\n]
 string: "(\\.|[^"])*"
+stmt-term: ;
 punctuation: [[:punct:]]+
 error: .
