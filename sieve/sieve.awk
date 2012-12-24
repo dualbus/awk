@@ -1,15 +1,20 @@
 BEGIN {
-    n = sqrt(N);
-    for(i = 2; i <= n; i++){
-        k = i**2
-        x = k
-        for(j = 0; x <= N; j++){
-            x = k+i*j
-            A[x]
+
+    n = int(sqrt(N));
+
+    print 2;
+
+    for(i = 3; i <= n; i += 2) {
+        if(i in A) continue;
+
+        for(j = i*i; j <= N; j += 2*i) {
+            A[j] = 1
         }
+
+        print i
     }
 
-    for(i = 2; i <= N; i++) {
+    for(; i <= N; i += 2){
       if(i in A) continue
 
       print i;
