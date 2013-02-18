@@ -34,7 +34,7 @@ function penc(s,     a, b, i, n) {
     n = split(s, a, "")
     for(i=1; i<=n; i++) {
         if(_penc_t[a[i]])
-            b = b sprintf("%%%X", ord(a[i]))
+            b = b sprintf("%%%02X", ord(a[i]))
         else
             b = b a[i]
     }
