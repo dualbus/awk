@@ -21,7 +21,7 @@ function chr(n) {
 function _penc(     c, i) {
     for(i=0; i<=255; i++) {
         c = sprintf("%c", i)
-        _penc_t[c] = c !~ /^[[:alnum:].~-]$/
+        _penc_t[c] = c !~ /^[[:alnum:].~_-]$/
     }
     _penc_i = 1
 }
